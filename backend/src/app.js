@@ -32,11 +32,23 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
-// Use cors middleware
-app.use(cors({
-  origin: process.env.CLIENT_URL,
+// Define allowed origins
+const allowedOrigins = ['http://localhost:8090', 'http://127.0.0.1:8090'];
+
+// Define CORS options
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-}));
+};
+
+// Use CORS middleware
+app.use(cors(corsOptions));
 
 // Use express built-in middleware for parsing JSON and urlencoded form data
 app.use(express.json());

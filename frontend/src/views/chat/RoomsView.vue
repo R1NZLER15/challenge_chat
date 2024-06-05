@@ -3,6 +3,9 @@
     <v-list nav>
       <v-list-item>
         <v-list-item-title>Rooms</v-list-item-title>
+        <v-list-item-subtitle>
+          Current room: {{ currentRoom ? currentRoom.name : 'None' }}
+        </v-list-item-subtitle>
       </v-list-item>
       <v-list-item v-for="room in rooms" :key="room._id" @click="joinRoom(room)">
         <v-list-item-title class="font-weight-bold">
@@ -41,13 +44,27 @@
         background-color="grey-lighten-2"
         density="compact"
         flat
-        hide-details
         class="overflow-hidden"
         rounded="pill"
         variant="solo-filled"
         @keydown.enter="sendMessage"
-      />
-      <v-btn class="ml-2" @click="sendMessage">Send</v-btn>
+        :rules="[
+          () =>
+            isValidMessage(message.trim()) ||
+            'Invalid message. Only letters, numbers, and basic symbols are allowed.'
+        ]"
+      >
+        <template v-slot:append>
+          <v-btn
+            color="primary"
+            @click="sendMessage"
+            :disabled="!message.trim() || !isValidMessage(message)"
+            variant="plain"
+          >
+            Send
+          </v-btn>
+        </template>
+      </v-text-field>
     </v-footer>
   </template>
 
@@ -109,7 +126,7 @@ function joinRoom(room) {
 
 function sendMessage() {
   console.log('sendMessage', message.value.trim(), currentRoom.value)
-  if (message.value.trim() && currentRoom.value) {
+  if (isValidMessage(message.value.trim()) && currentRoom.value) {
     const msg = {
       author: authStore.user,
       text: message.value,
@@ -118,7 +135,14 @@ function sendMessage() {
     }
     socket.emit('sendMessage', msg)
     message.value = ''
+  } else {
+    alert('Invalid message. Only letters, numbers, and basic symbols are allowed.')
   }
+}
+
+function isValidMessage(msg) {
+  const regex = /^[a-zA-Z0-9\s.,!?@#%^&*()-_=+{}[\]:;"'<>\|\/`~\\]+$/
+  return regex.test(msg)
 }
 
 async function fetchMessages(room) {

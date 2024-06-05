@@ -91,7 +91,7 @@ export const setupSocket = (server) => {
      * Event handler for sending a message.
      * @param {Object} data - The data object containing the message information.
      */
-    socket.on('sendMessage', async ({ text, room, recipient }) => {
+    socket.on('sendMessage', async ({ text, room }) => {
       if (!socket.user) {
         socket.emit('authError', { message: 'Authentication required' });
         return;
@@ -103,25 +103,32 @@ export const setupSocket = (server) => {
         return;
       }
 
+      if (!text || text.length > 500) {
+        socket.emit('messageError', { message: 'Message must be between 1 and 500 characters' });
+        return;
+      } else if (!room && !socket.room) {
+        socket.emit('messageError', { message: 'Room must be specified' });
+        return;
+      }
+
+      // Regex validation for allowed characters
+      const regex = /^[a-zA-Z0-9\s.,!?@#%^&*()-_=+{}[\]:;"'<>\|\/`~\\]+$/;
+      if (!regex.test(text)) {
+        socket.emit('messageError', { message: 'Message contains invalid characters' });
+        return;
+      }
+
       const newMessage = new Message({
         author: socket.user._id,
         text,
         room: room || socket.room,
-        recipient: recipient || null,
         timestamp: new Date()
       });
       await newMessage.save();
 
       await newMessage.populate('author', 'username');
 
-      if (room) {
-        io.to(room).emit('receiveMessage', newMessage);
-      } else if (recipient) {
-        const recipientUser = await User.findById(recipient);
-        if (recipientUser && recipientUser.socketId) {
-          io.to(recipientUser.socketId).emit('receiveMessage', newMessage);
-        }
-      }
+      io.to(room).emit('receiveMessage', newMessage);
     });
 
     /**
