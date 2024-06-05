@@ -98,15 +98,15 @@ const remember = ref(false)
 const error = computed(() => authStore.error)
 const tab = ref('')
 
-const submitForm = async () => {
+async function submitForm() {
   await authStore.register(username.value, password.value, role.value, remember.value)
 }
 
-const login = async () => {
+async function login() {
   await authStore.login(username.value, password.value, remember.value)
 }
 
-const guestLogin = async () => {
+async function guestLogin() {
   await authStore.guestLogin()
 }
 

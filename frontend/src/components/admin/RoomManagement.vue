@@ -1,3 +1,50 @@
+<template>
+  <v-card>
+    <v-card-title>Rooms</v-card-title>
+    <v-card-text>
+      <v-list v-if="rooms.length > 0">
+        <v-list-item
+          v-for="room in rooms"
+          :key="room._id"
+          :title="room.name"
+          :subtitle="`Created by: ${room.createdBy.username}`"
+        >
+          <template v-slot:append>
+            <v-btn color="red" @click="deleteRoom(room._id)" variant="plain">
+              <v-icon icon="fas fa-trash" />
+              <v-tooltip bottom activator="parent">
+                Delete Room:
+                {{ room.name }}
+              </v-tooltip>
+            </v-btn>
+          </template>
+        </v-list-item>
+        <v-list-item>
+          <v-btn @click="createRoomDialog = true" color="green" variant="plain">
+            <v-icon start icon="fas fa-plus" />
+            Create Room
+          </v-btn>
+        </v-list-item>
+      </v-list>
+      <v-alert v-else outlined type="info" color="blue-grey lighten-2">
+        No rooms found. Create some rooms to get started!
+      </v-alert>
+    </v-card-text>
+    <v-dialog v-model="createRoomDialog" max-width="500px">
+      <v-card>
+        <v-card-title>Create Room</v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newRoomName" label="Room Name"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="createRoomDialog = false">Cancel</v-btn>
+          <v-btn @click="createRoom">Create</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-card>
+</template>
+
 <script setup>
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
@@ -10,7 +57,7 @@ onMounted(async () => {
   await getRooms()
 })
 
-const createRoom = async () => {
+async function createRoom() {
   try {
     const response = await axios.post('http://localhost:3000/api/rooms/create', {
       name: newRoomName.value
@@ -37,47 +84,3 @@ async function deleteRoom(roomId) {
   }
 }
 </script>
-
-<template>
-  <v-card>
-    <v-card-title>Rooms</v-card-title>
-    <v-card-text>
-      <v-list>
-        <v-list-item
-          v-for="room in rooms"
-          :key="room._id"
-          :title="room.name"
-          :subtitle="`Created by: ${room.createdBy.username}`"
-        >
-          <template v-slot:append>
-            <v-btn color="red" @click="deleteRoom(room._id)" variant="plain">
-              <v-icon icon="fas fa-trash" />
-              <v-tooltip bottom activator="parent">
-                Delete Room:
-                {{ room.name }}
-              </v-tooltip>
-            </v-btn>
-          </template>
-        </v-list-item>
-        <v-list-item>
-          <v-btn @click="createRoomDialog = true" color="green" variant="plain">
-            <v-icon start icon="fas fa-plus" />
-            Create Room
-          </v-btn>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
-    <v-dialog v-model="createRoomDialog" max-width="500px">
-      <v-card>
-        <v-card-title>Create Room</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="newRoomName" label="Room Name"></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="createRoomDialog = false">Cancel</v-btn>
-          <v-btn @click="createRoom">Create</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-card>
-</template>
