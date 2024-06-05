@@ -1,44 +1,3 @@
-<script setup>
-import axios from 'axios'
-import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-
-const users = ref([])
-const roles = ['user', 'admin']
-
-const authStore = useAuthStore()
-
-const self = authStore.user
-
-onMounted(async () => {
-  await getUsers()
-})
-
-async function getUsers() {
-  const response = await axios.get('http://localhost:3000/api/users')
-  users.value = response.data
-}
-
-async function setUserRole(userId, role) {
-  try {
-    console.log('setUserRole', userId, role)
-    await axios.put(`http://localhost:3000/api/users/update/${userId}`, { role: role })
-    getUsers()
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-async function deleteUser(userId) {
-  try {
-    await axios.delete(`http://localhost:3000/api/users/delete/${userId}`)
-    getUsers()
-  } catch (error) {
-    console.error(error)
-  }
-}
-</script>
-
 <template>
   <v-card>
     <v-card-title>Users</v-card-title>
@@ -79,3 +38,44 @@ async function deleteUser(userId) {
     </v-card-text>
   </v-card>
 </template>
+
+<script setup>
+import axios from 'axios'
+import { ref, onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const users = ref([])
+const roles = ['user', 'admin']
+
+const authStore = useAuthStore()
+
+const self = authStore.user
+
+onMounted(async () => {
+  await getUsers()
+})
+
+async function getUsers() {
+  const response = await axios.get('http://localhost:3000/api/users')
+  users.value = response.data
+}
+
+async function setUserRole(userId, role) {
+  try {
+    console.log('setUserRole', userId, role)
+    await axios.put(`http://localhost:3000/api/users/update/${userId}`, { role: role })
+    getUsers()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function deleteUser(userId) {
+  try {
+    await axios.delete(`http://localhost:3000/api/users/delete/${userId}`)
+    getUsers()
+  } catch (error) {
+    console.error(error)
+  }
+}
+</script>

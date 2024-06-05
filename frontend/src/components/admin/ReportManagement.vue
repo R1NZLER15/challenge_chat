@@ -1,3 +1,51 @@
+<template>
+  <v-card>
+    <v-card-title>Reports</v-card-title>
+    <v-card-text>
+      <v-list v-if="reports.length > 0">
+        <v-list-item v-for="report in reports" :key="report._id">
+          <template v-slot:title>
+            <v-chip label color="red" text-color="white" small class="ma-1">
+              <v-icon start color="red" icon="fas fa-user" />
+              Report by: {{ report.reportedBy.username }}
+            </v-chip>
+            <v-chip label small :color="reportStatus(report.status, 'color')">
+              <v-icon
+                start
+                :color="reportStatus(report.status, 'color')"
+                :icon="reportStatus(report.status, 'icon')"
+              />
+              Status: {{ report.status }}
+            </v-chip>
+            <v-chip label small color="grey" text-color="white" class="ma-1">
+              <v-icon start color="grey" icon="fas fa-clock" />
+              {{ getReportTime(report.timestamp) }}
+            </v-chip>
+          </template>
+          <v-alert dense outlined type="error" color="red-lighten-2">
+            Current message: {{ report.message.text }}<br />
+            Reported message: {{ report.originalMessage }}
+          </v-alert>
+          <template v-slot:append>
+            <v-btn color="green" @click="resolveReport(report._id, true)" variant="plain">
+              <v-icon icon="fas fa-check" />
+            </v-btn>
+            <v-btn color="red" @click="resolveReport(report._id, false)" variant="plain">
+              <v-icon icon="fas fa-times" />
+            </v-btn>
+            <v-btn color="red" @click="deleteReport(report._id)" variant="plain">
+              <v-icon icon="fas fa-trash" />
+            </v-btn>
+          </template>
+        </v-list-item>
+      </v-list>
+      <v-alert v-else outlined type="info" color="blue-grey lighten-2">
+        No reports to show. That's a good thing!
+      </v-alert>
+    </v-card-text>
+  </v-card>
+</template>
+
 <script setup>
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
@@ -72,48 +120,3 @@ async function deleteReport(reportId) {
   }
 }
 </script>
-
-<template>
-  <v-card>
-    <v-card-title>Reports</v-card-title>
-    <v-card-text>
-      <v-list>
-        <v-list-item v-for="report in reports" :key="report._id">
-          <template v-slot:title>
-            <v-chip label color="red" text-color="white" small class="ma-1">
-              <v-icon start color="red" icon="fas fa-user" />
-              Report by: {{ report.reportedBy.username }}
-            </v-chip>
-            <v-chip label small :color="reportStatus(report.status, 'color')">
-              <v-icon
-                start
-                :color="reportStatus(report.status, 'color')"
-                :icon="reportStatus(report.status, 'icon')"
-              />
-              Status: {{ report.status }}
-            </v-chip>
-            <v-chip label small color="grey" text-color="white" class="ma-1">
-              <v-icon start color="grey" icon="fas fa-clock" />
-              {{ getReportTime(report.timestamp) }}
-            </v-chip>
-          </template>
-          <v-alert dense outlined type="error" color="red-lighten-2">
-            Current message: {{ report.message.text }}<br />
-            Reported message: {{ report.originalMessage }}
-          </v-alert>
-          <template v-slot:append>
-            <v-btn color="green" @click="resolveReport(report._id, true)" variant="plain">
-              <v-icon icon="fas fa-check" />
-            </v-btn>
-            <v-btn color="red" @click="resolveReport(report._id, false)" variant="plain">
-              <v-icon icon="fas fa-times" />
-            </v-btn>
-            <v-btn color="red" @click="deleteReport(report._id)" variant="plain">
-              <v-icon icon="fas fa-trash" />
-            </v-btn>
-          </template>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
-  </v-card>
-</template>
