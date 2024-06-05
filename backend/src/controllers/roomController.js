@@ -43,22 +43,21 @@ export const getMessages = async (req, res) => {
  * @param {string} req.user.role - The role of the user making the request.
  * @param {Object} req.body - The request body.
  * @param {string} req.body.name - The name of the room.
- * @param {string} req.user.id - The ID of the user creating the room.
+ * @param {string} req.user._id - The ID of the user creating the room.
  * @param {Object} res - The response object.
  * @returns {Promise<void>} - A promise that resolves when the room is created.
  */
 export const createRoom = async (req, res) => {
   try {
-    console.log(req.user);
     if (req.user.role === 'guest') {
       return res.status(403).json({ message: 'Guests cannot create rooms.' });
     }
     const room = new Room({
       name: req.body.name,
-      createdBy: req.user.id
+      createdBy: req.user._id
     });
     await room.save();
-    res.status(201).json(room);
+    res.status(201).json({ name: room.name, _id: room._id, createdBy: req.user });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

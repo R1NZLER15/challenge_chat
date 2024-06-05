@@ -13,8 +13,7 @@ onMounted(async () => {
 const createRoom = async () => {
   try {
     const response = await axios.post('http://localhost:3000/api/rooms/create', {
-      name: newRoomName.value,
-      createdBy: localStorage.getItem('userId')
+      name: newRoomName.value
     })
     rooms.value.push(response.data)
     newRoomName.value = ''
@@ -46,7 +45,7 @@ async function deleteRoom(roomId) {
       <v-list>
         <v-list-item
           v-for="room in rooms"
-          :key="room.id"
+          :key="room._id"
           :title="room.name"
           :subtitle="`Created by: ${room.createdBy.username}`"
         >

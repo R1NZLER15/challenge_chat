@@ -23,6 +23,9 @@ import { setupSocket } from './socket.js';
 // Import cleanup script
 import './cleanup.js';
 
+// Import admin initialization script
+import initAdmin from './initAdmin.js';
+
 // Load environment variables
 dotenv.config();
 
@@ -62,8 +65,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI).then(() => {
+mongoose.connect(process.env.MONGO_URI).then(async () => {
   console.log('Connected to MongoDB');
+  // Initialize admin user
+  await initAdmin();
+  // Start the server
+  const server = app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server is running on port ${process.env.PORT || 3000}`);
+  });
+  // Setup socket
+  setupSocket(server);
 }).catch(err => console.log(err));
 
 // Use routes
@@ -74,11 +85,3 @@ app.use('/api/reports', reportRoutes);
 
 // Use error handler middleware
 app.use(errorHandler);
-
-// Start the server
-const server = app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server is running on port ${process.env.PORT || 3000}`);
-});
-
-// Setup socket
-setupSocket(server);

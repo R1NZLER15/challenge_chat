@@ -5,6 +5,11 @@ import AdminView from '../views/admin/AdminView.vue'
 import AuthView from '../views/AuthView.vue'
 import { useAuthStore } from '../stores/auth'
 
+/**
+ * Router configuration for the application.
+ *
+ * @type {import('vue-router').Router}
+ */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

@@ -110,7 +110,6 @@ const guestLogin = async () => {
   await authStore.guestLogin()
 }
 
-//Watch for changes in "tab" and reset the error message
 watch(tab, () => {
   username.value = ''
   password.value = ''

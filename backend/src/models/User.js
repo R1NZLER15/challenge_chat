@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
 userSchema.statics.findByToken = async function(token) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    return this.findById(decoded.id);
+    return this.findById(decoded._id);
   } catch (err) {
     return null;
   }

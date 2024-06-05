@@ -46,7 +46,7 @@ async function deleteUser(userId) {
       <v-list>
         <v-list-item
           v-for="user in users"
-          :key="user.id"
+          :key="user._id"
           :title="user.username"
           :subtitle="`Role: ${user.role}`"
         >

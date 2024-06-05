@@ -2,10 +2,25 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
+/**
+ * Generates a JSON Web Token (JWT) for the given user.
+ *
+ * @param {Object} user - The user object.
+ * @param {string} user._id - The user's ID.
+ * @param {string} user.username - The user's username.
+ * @param {string} user.role - The user's role.
+ * @returns {string} - The generated JWT.
+ */
 const generateToken = (user) => {
   return jwt.sign({ _id: user._id, username: user.username, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
+/**
+ * Registers a new user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the user is registered.
+ */
 export const register = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -22,6 +37,13 @@ export const register = async (req, res) => {
   }
 };
 
+/**
+ * Handles the login functionality.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the login process is complete.
+ */
 export const login = async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -40,6 +62,12 @@ export const login = async (req, res) => {
   }
 };
 
+/**
+ * Logs in a guest user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the guest user is logged in.
+ */
 export const guestLogin = async (req, res) => {
   let timestamp = new Date().getTime();
   let guestUsername = `Guest${timestamp}`;
@@ -58,6 +86,11 @@ export const guestLogin = async (req, res) => {
 };
 
 
+/**
+ * Checks the authentication of the request.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
 export const checkAuth = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   if (!token) {

@@ -78,7 +78,7 @@ async function deleteReport(reportId) {
     <v-card-title>Reports</v-card-title>
     <v-card-text>
       <v-list>
-        <v-list-item v-for="report in reports" :key="report.id">
+        <v-list-item v-for="report in reports" :key="report._id">
           <template v-slot:title>
             <v-chip label color="red" text-color="white" small class="ma-1">
               <v-icon start color="red" icon="fas fa-user" />
