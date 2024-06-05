@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Chat Rooms",
+    "tooltip": "Chat Rooms",
+    "icon": "fas fa-comments",
+    "color": "green",
+    "route": "/chat/rooms",
+    "roles": ["admin", "user", "guest"]
+  },
+  {
+    "title": "Site Settings",
+    "tooltip": "Site Settings",
+    "icon": "fas fa-cogs",
+    "color": "indigo",
+    "route": "/admin",
+    "roles": ["admin"]
+  }
+]
