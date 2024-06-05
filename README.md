@@ -21,6 +21,18 @@ To set up the development environment, follow these steps:
    npm install
    ```
 
+    1. **Create a `.env` file in the backend folder with the following content:**
+
+     ```env
+     NODE_ENV=development # or "production"
+     MONGO_URI=mongodb://mongo:27017/chat
+     SESSION_SECRET="your-session-secret" #change this
+     JWT_SECRET="your-jwt-secret" #change this
+     ADMIN_USERNAME="admin" #change this
+     ADMIN_PASSWORD="adminAccess1234" #change this
+     CLIENT_URL=http://localhost:8090 #Should be the same as the frontend port
+     ```
+
 3. **Install dependencies for the frontend:**
 
    ```bash
