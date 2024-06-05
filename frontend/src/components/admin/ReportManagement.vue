@@ -7,7 +7,7 @@
           <template v-slot:title>
             <v-chip label color="red" text-color="white" small class="ma-1">
               <v-icon start color="red" icon="fas fa-user" />
-              Report by: {{ report.reportedBy.username }}
+              Report by: {{ report.reportedBy ? report.reportedBy.username : 'Deleted User' }}
             </v-chip>
             <v-chip label small :color="reportStatus(report.status, 'color')">
               <v-icon
